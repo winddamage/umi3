@@ -8,9 +8,9 @@ export default defineConfig({
   },
   antd: {},
   layout: {
-    name: 'Ant Design',
-    locale: true,
-    layout: 'side',
+    // name: 'Ant Design',
+    // locale: true,
+    // layout: 'side',
   },
   routes,
 });

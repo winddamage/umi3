@@ -19,11 +19,11 @@ export default function Login() {
 
   const handleFetchUserInfo = async () => {
     const { code, data } = await fetchUserInfo();
-    if (code !== 200) return { ...initialState };
-    return {
+    if (code !== 200) return;
+    setInitialState({
       ...initialState,
       ...data,
-    };
+    });
   };
 
   const handleLogin = async value => {
