@@ -21,4 +21,23 @@ export default {
       }),
     );
   },
+  'GET /api/user/userInfo': (req, res) => {
+    const { authention } = req.headers;
+    const username = authention.split(' ')[1];
+    const roles = [];
+    if (username === 'admin') {
+      roles.push('admin');
+    } else {
+      roles.push('user');
+    }
+    res.end(
+      JSON.stringify({
+        code: 200,
+        msg: 'success',
+        data: {
+          roles,
+        },
+      }),
+    );
+  },
 };
