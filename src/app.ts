@@ -4,7 +4,7 @@ import { history, RequestConfig } from 'umi';
 //   Settings as LayoutSettings,
 // } from '@ant-design/pro-layout';
 import { fetchUserInfo, fetchRoutes } from '@/services/user';
-import { getStorage } from '@/utils/storage';
+import { getStorage, setStorage } from '@/utils/storage';
 // import RightContent from '@/components/RightContent'
 
 const initialState = {
@@ -45,15 +45,17 @@ export function patchRoutes({ routes }: { routes: Route[] }) {
       ) {
         sR.children.map(item => {
           if (item.redirect) {
-            route.routes.unshift({
-              ...item,
-              exact: true,
-            });
+            route.routes &&
+              route.routes.unshift({
+                ...item,
+                exact: true,
+              });
           } else {
-            route.routes.unshift({
-              ...item,
-              component: require(`./pages/${item.component}`).default,
-            });
+            route.routes &&
+              route.routes.unshift({
+                ...item,
+                component: require(`./pages/${item.component}`).default,
+              });
           }
         });
       }
@@ -72,7 +74,10 @@ export async function render(oldRender: any) {
   if (code !== 200 && pathname !== '/login') {
     history.push('/login');
   } else {
-    serverRoutes = data.serverRoutes;
+    if (data.serverRoutes && data.serverRoutes.length) {
+      setStorage('serverRoutes', data.serverRoutes);
+      serverRoutes = data.serverRoutes;
+    }
   }
   oldRender();
 }

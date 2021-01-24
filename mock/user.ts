@@ -11,7 +11,7 @@ const routes = [
         component: 'index',
         menu: {
           name: '欢迎页面',
-          icon: 'SmileOutlined',
+          icon: 'icon-welcome',
         },
       },
       {
@@ -19,7 +19,7 @@ const routes = [
         component: 'manage/index',
         menu: {
           name: '管理中心',
-          icon: 'SettingOutlined',
+          icon: 'icon-manage',
         },
       },
     ],
@@ -76,6 +76,7 @@ export default {
     } else {
       serverRoutes = routes;
     }
+    res.setHeader('Content-Type', 'application/json;charset=utf-8');
     res.end(
       JSON.stringify({
         code: 200,
