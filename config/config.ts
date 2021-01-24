@@ -7,10 +7,10 @@ export default defineConfig({
     type: 'none',
   },
   antd: {},
-  layout: {
-    // name: 'Ant Design',
-    // locale: true,
-    // layout: 'side',
-  },
+  // layout: {
+  // name: 'Ant Design',
+  // locale: true,
+  // layout: 'side',
+  // },
   routes,
 });

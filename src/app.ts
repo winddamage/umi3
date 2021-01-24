@@ -3,7 +3,7 @@ import { history, RequestConfig } from 'umi';
 //   BasicLayoutProps,
 //   Settings as LayoutSettings,
 // } from '@ant-design/pro-layout';
-import { fetchUserInfo } from '@/services/user';
+import { fetchUserInfo, fetchRoutes } from '@/services/user';
 import { getStorage } from '@/utils/storage';
 // import RightContent from '@/components/RightContent'
 
@@ -17,8 +17,49 @@ const {
 } = history;
 
 const token = getStorage('token');
+interface Menu {
+  name?: string;
+  icon?: string;
+}
+interface Route {
+  path: string;
+  exact?: boolean;
+  redirect?: string;
+  component?: string;
+  menu?: Menu;
+  routes?: Route[];
+  children?: Route[];
+}
 
-export function patchRoutes({ routes }) {
+let serverRoutes: Route[] = [];
+
+export function patchRoutes({ routes }: { routes: Route[] }) {
+  console.log('patchRoutes: ', serverRoutes);
+  routes.forEach((route: Route) => {
+    serverRoutes.map((sR: Route) => {
+      if (
+        route.path === sR.path &&
+        route.routes &&
+        sR.children &&
+        sR.children.length
+      ) {
+        sR.children.map(item => {
+          if (item.redirect) {
+            route.routes.unshift({
+              ...item,
+              exact: true,
+            });
+          } else {
+            route.routes.unshift({
+              ...item,
+              component: require(`./pages/${item.component}`).default,
+            });
+          }
+        });
+      }
+    });
+  });
+
   routes.unshift({
     path: '/login',
     exact: true,
@@ -26,14 +67,26 @@ export function patchRoutes({ routes }) {
   });
 }
 
+export async function render(oldRender: any) {
+  const { code, data } = await fetchRoutes();
+  if (code !== 200 && pathname !== '/login') {
+    history.push('/login');
+  } else {
+    serverRoutes = data.serverRoutes;
+  }
+  oldRender();
+}
+
 export async function getInitialState() {
   if (pathname !== '/login') {
-    const data = await fetchUserInfo();
+    const { code, data } = await fetchUserInfo();
+    if (code !== 200) return;
+    const { roles } = data;
+    return {
+      ...initialState,
+      roles: [...roles],
+    };
   }
-
-  return {
-    ...initialState,
-  };
 }
 
 export const request: RequestConfig = {

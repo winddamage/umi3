@@ -13,6 +13,7 @@ export const login = (data: loginData) => {
 };
 
 export const fetchUserInfo = () => {
-  console.log(222);
   return request('/api/user/userInfo');
 };
+
+export const fetchRoutes = () => request('/api/user/routes');

@@ -1,5 +1,32 @@
+const routes = [
+  {
+    path: '/',
+    children: [
+      {
+        path: '/',
+        redirect: '/home',
+      },
+      {
+        path: '/home',
+        component: 'index',
+        menu: {
+          name: '欢迎页面',
+          icon: 'SmileOutlined',
+        },
+      },
+      {
+        path: '/manage',
+        component: 'manage/index',
+        menu: {
+          name: '管理中心',
+          icon: 'SettingOutlined',
+        },
+      },
+    ],
+  },
+];
 export default {
-  'POST /api/user/login': (req, res) => {
+  'POST /api/user/login': (req: any, res: any) => {
     const { username, password } = req.body;
     const usernames = ['admin', 'user'];
     if (!usernames.includes(username) || password !== '123456') {
@@ -21,7 +48,7 @@ export default {
       }),
     );
   },
-  'GET /api/user/userInfo': (req, res) => {
+  'GET /api/user/userInfo': (req: any, res: any) => {
     const { authention } = req.headers;
     const username = authention.split(' ')[1];
     const roles = [];
@@ -36,6 +63,25 @@ export default {
         msg: 'success',
         data: {
           roles,
+        },
+      }),
+    );
+  },
+  'GET /api/user/routes': (req: any, res: any) => {
+    const { authention } = req.headers;
+    const username = authention.split(' ')[1];
+    let serverRoutes = [];
+    if (username === 'admin') {
+      serverRoutes = routes;
+    } else {
+      serverRoutes = routes;
+    }
+    res.end(
+      JSON.stringify({
+        code: 200,
+        msg: 'success',
+        data: {
+          serverRoutes,
         },
       }),
     );
